@@ -968,10 +968,10 @@ function renderProduct() {
                 html += '<td>' + '<img src=' + item.image + '>' + '</td>';
                 html += '<td>' + item.amount + '</td>';
                 html += '<td>' + item.status + '</td>';
-                html += '<td>' + item.price + '</td>';
+                html += '<td>' + item.price.toLocaleString('de-DE') + '</td>';
                 html += '<td>' + item.category + '</td>';
                 html += '<td>';
-                html += '<button class="btn btn-primary btn-sm trash" type="button" title="Xóa" onclick=""id =' + item.code + '>' + '<i class="fas fa-trash-alt">' + '</i>' + '</button>';
+                html += '<button class="btn btn-primary btn-sm trash" type="button" title="Xóa" onclick="deleteProduct(this);"id =' + item.code + '>' + '<i class="fas fa-trash-alt">' + '</i>' + '</button>';
                 html += '<a href="/NhomA03/SanPham/html/admin/form_edit_product.html" id =' + item.code + '>' + '<button class="btn btn-primary btn-sm edit" onclick="getItemEdit(this);"type="button" title="Sửa" id="show-emp" data-toggle="modal" data-target="#ModalUP">' + '<i class="fas fa-edit">' + '</i>' + '</button>' + '</a>';
                 html += '</td>';
                 html += '</tr>';
@@ -1068,10 +1068,10 @@ function render_edit_product() {
                     <option value="3">Big One</option>
                     <option value="5">My home</option>
                     <option value="6">Đang cập nhật</option>`
-                price.value = item.price;
+                price.value = item.price.toLocaleString('de-DE');
                 imag.innerHTML += `<img class="thumb"   id="myImg" src="${item.image}" title=".png">`;
                 description.innerHTML += item.description;
-                console.log(item);
+                
             }
         })
     }
@@ -1079,12 +1079,10 @@ function render_edit_product() {
 render_edit_product();
 
 function deleteProduct(button) {
-    console.log(button.id);
     let products = localStorage.getItem("product");
     products = JSON.parse(products);
     var product = [];
     if (products) {
-        console.log(products);
         Object.values(products).map((item, index) => {
             if (item.code != button.id) {
                 var newproduct = {
@@ -1102,49 +1100,53 @@ function deleteProduct(button) {
                 product.push(newproduct);
             }
         });
-        localStorage.setItem("product", JSON.stringify(product));
     }
-    location.reload();
-
+    swal({
+        title: "Cảnh báo",
+        text: "Bạn có chắc chắn là muốn xóa sản phẩm này?",
+        buttons: ["Hủy bỏ", "Đồng ý"],
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            swal("Đã xóa thành công!", {});
+            localStorage.setItem("product", JSON.stringify(product));
+            location.reload();
+        }
+    });
 }
 
 renderProduct();
 renderListPage();
 changePage();
-if (pageNext) {
-    pageNext.addEventListener('click', () => {
-        currentPage++;
-        if (currentPage > totalPages) {
-            currentPage = totalPages;
-        }
-        // if(currentPage === totalPages) {
-        //     $('.page_btn_next').addClass('page_btn_active');
-        // }
-        // $('.page_btn_next').removeClass('page_btn_active');
-        $('.number_page li').removeClass('active');
-        $(`.number_page li: eq($ { currentPage - 1 })
-                        `).addClass('active');
-        getCurrentPage(currentPage);
-        renderProduct();
-    })
-}
-if (pagePrev) {
-    pagePrev.addEventListener('click', () => {
-        currentPage--;
-        if (currentPage <= 1) {
-            currentPage = 1;
-        }
-        // if(currentPage === 1) {
-        //     $('.page_btn_prev').addClass('page_btn_active');
-        // }
-        // $('.page_btn_prev').removeClass('page_btn_active');
-        $('.number_page li').removeClass('active');
-        $(`.number_page li: eq($ { currentPage - 1 })
-                        `).addClass('active');
-        getCurrentPage(currentPage);
-        renderProduct();
-    })
-}
+pageNext.addEventListener('click', () => {
+    currentPage++;
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
+    // if(currentPage === totalPages) {
+    //     $('.page_btn_next').addClass('page_btn_active');
+    // }
+    // $('.page_btn_next').removeClass('page_btn_active');
+    $('.number_page li').removeClass('active');
+    $(`.number_page li:eq(${currentPage - 1})`).addClass('active');
+    getCurrentPage(currentPage);
+    renderProduct();
+    reload();
+})
+pagePrev.addEventListener('click', () => {
+    currentPage--;
+    if (currentPage <= 1) {
+        currentPage = 1;
+    }
+    // if(currentPage === 1) {
+    //     $('.page_btn_prev').addClass('page_btn_active');
+    // }
+    // $('.page_btn_prev').removeClass('page_btn_active');
+    $('.number_page li').removeClass('active');
+    $(`.number_page li:eq(${currentPage - 1})`).addClass('active');
+    getCurrentPage(currentPage);
+    renderProduct();
+})
 
 function logout() {
     var signin = localStorage.getItem('issignin');
@@ -1175,10 +1177,6 @@ function edit_product() {
     var categorytext = category.options[category.selectedIndex].text;
     var Supplierstext = Suppliers.options[Suppliers.selectedIndex].text;
     var newproduct = [];
-    var imag2e = document.getElementById('avatar').value;
-
-    console.log(imag2e);
-
     const content = product.map((item, index) => {
         if (edit_product == item.code) {
             item.code = code;
@@ -1196,10 +1194,11 @@ function edit_product() {
             newproduct.push(item);
         }
     })
-    console.log(newproduct);
     localStorage.setItem('edit-product', code)
     localStorage.setItem('product', JSON.stringify(newproduct));
     alert('Sửa thành công !!');
+    location.reload();
+
 }
 
 function add_product() {

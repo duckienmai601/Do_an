@@ -351,7 +351,7 @@ function renderProduct() {
         <div class="lazyload_item popup category_right_content_item">
         <img src= ${item.image} >
         <h5> <a href="  ${item.link}  ">  ${item.title}  </a></h5>
-        <p> ${item.price}  <u> Đ</u></p>
+        <p> ${item.price.toLocaleString('de-DE')}  <u> Đ</u></p> 
         <ul class="popup_item">
         <a  title="Mua hàng" class="add-cart" id="${item.id}">
         <li class="fas fa-cart-shopping" onclick="checkSignIn1();"></li>
@@ -523,7 +523,7 @@ function listProduct(category_arr = [], price_arr = []) {
                 <div class="lazyload_item popup category_right_content_item">
                     <img src="${product[i].image}">
                     <h5><a href="${product[i].link}">${product[i].title}</a></h5>
-                    <p>${product[i].price}<u>đ</u></p>
+                    <p>${product[i].price.toLocaleString('de-DE')}<u>đ</u></p>
                     <ul class="popup_item">
                         <a href="" title="Mua hàng"><li class="fas fa-cart-shopping"></li></a>
                         <a href="${product[i].link}" title="Chi tiết"><li class="fas fa-eye"></li></a>
