@@ -237,7 +237,7 @@ function afterSignIn() {
                     <li>Đơn Hàng</li>
                 </a>
                     <a onclick="logout()" class="dropdown-item ">
-                        <li>logout</li>
+                        <li>Đăng Xuất</li>
                     </a>
                 </ul>
             </li>
